@@ -1,28 +1,50 @@
+// 'use strict';
+
+// var fs = require('fs');
+// var path = require('path');
+// var Sequelize = require('sequelize');
+// var basename = path.basename(module.filename);
+// var env = process.env.NODE_ENV || 'development';
+// var config = require(__dirname + '/../config/config.js')[env];
+// var db = {};
+
+// if (process.env.NODE_ENV === 'production') {
+//     var sequelize = new Sequelize(process.env.JAWSDB_URL, {
+//         dialect: 'mysql',
+//     });
+// } else {
+//     if (config.use_env_variable) {
+//         var sequelize = new Sequelize(process.env[config.use_env_variable]);
+//     } else {
+//         var sequelize = new Sequelize(
+//             config.database,
+//             config.username,
+//             config.password,
+//             config,
+//         );
+//     }
+// }
+
 'use strict';
 
+var db = {};
 var fs = require('fs');
 var path = require('path');
 var Sequelize = require('sequelize');
-var basename = path.basename(module.filename);
+var basename = path.basename(__filename);
 var env = process.env.NODE_ENV || 'development';
-var config = require(__dirname + '/../config/config.js')[env];
-var db = {};
+var config = require('./../config/config.js')[env];
 
-if (process.env.NODE_ENV === 'production') {
-    var sequelize = new Sequelize(process.env.JAWSDB_URL, {
-        dialect: 'mysql',
-    });
+var sequelize;
+if (config.use_env_variable) {
+    sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-    if (config.use_env_variable) {
-        var sequelize = new Sequelize(process.env[config.use_env_variable]);
-    } else {
-        var sequelize = new Sequelize(
-            config.database,
-            config.username,
-            config.password,
-            config,
-        );
-    }
+    sequelize = new Sequelize(
+        config.database,
+        config.username,
+        config.password,
+        config,
+    );
 }
 
 fs.readdirSync(__dirname)
