@@ -1,16 +1,14 @@
-const mongoose = require('mongoose');
-const db = require('../models');
+'use strict';
 
-const url = process.env.MONGODB_URI || 'mongodb://localhost/book-worm-db';
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
-
-const wordSeed = [
+const words = [
     {
         name: 'cadence',
         definition: 'a modulation or inflection of the voice.',
         partOfSpeech: 'noun',
         origin: 'Slack message at work',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'furlough',
@@ -19,6 +17,8 @@ const wordSeed = [
         partOfSpeech: 'noun',
         origin: 'A news article',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'halcyon',
@@ -27,6 +27,8 @@ const wordSeed = [
         partOfSpeech: 'adjective',
         origin: 'Slack message at work',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'antithesis',
@@ -35,6 +37,8 @@ const wordSeed = [
         partOfSpeech: 'noun',
         origin: 'Read it online',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'synecdoche',
@@ -43,6 +47,8 @@ const wordSeed = [
         partOfSpeech: 'noun',
         origin: 'Conversation with a friend',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'metonymy',
@@ -51,6 +57,8 @@ const wordSeed = [
         partOfSpeech: 'noun',
         origin: 'Reading online',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'double entendre',
@@ -59,6 +67,8 @@ const wordSeed = [
         partOfSpeech: 'noun',
         origin: 'Conversation with a friend ',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'zilch',
@@ -66,6 +76,8 @@ const wordSeed = [
         partOfSpeech: 'pronoun',
         origin: 'Conversation with a friend ',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'precocious',
@@ -74,6 +86,8 @@ const wordSeed = [
         partOfSpeech: 'adjective',
         origin: 'Read it in a book',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'ardent',
@@ -81,6 +95,8 @@ const wordSeed = [
         partOfSpeech: 'adjective',
         origin: 'Read it online',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'conviviality',
@@ -88,6 +104,8 @@ const wordSeed = [
         partOfSpeech: 'noun',
         origin: 'Read online',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'torpid',
@@ -95,6 +113,8 @@ const wordSeed = [
         partOfSpeech: 'adjective',
         origin: 'Read it online',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
     {
         name: 'myopic',
@@ -102,16 +122,21 @@ const wordSeed = [
         partOfSpeech: 'adjective',
         origin: 'The Gene By Siddhartha Mukherjee',
         date: new Date(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
     },
 ];
 
-db.Word.deleteMany({})
-    .then(() => db.Word.collection.insertMany(wordSeed))
-    .then((data) => {
-        console.log(data.result.n + ' records inserted!');
-        process.exit(0);
-    })
-    .catch((err) => {
-        console.error(err);
-        process.exit(1);
-    });
+module.exports = {
+    up: async (queryInterface, Sequelize) => {
+        //  Add seed commands here.
+
+        await queryInterface.bulkInsert('Words', words, {});
+    },
+
+    down: async (queryInterface, Sequelize) => {
+        //  Add commands to revert seed here.
+
+        await queryInterface.bulkDelete('Words', null, {});
+    },
+};

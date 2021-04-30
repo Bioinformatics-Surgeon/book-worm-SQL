@@ -1,27 +1,39 @@
-/* initialize server variables */
-const express = require("express"); // init express
-const mongoose = require("mongoose"); // init mongoose
-const routes = require("./routes"); // import routes
-const PORT = process.env.PORT || 3001; // inti PORT
-const app = express(); // store express() method
+// *****************************************************************************
+// Server.js - This file is the initial starting point for the Node/Express server.
+//
+// ******************************************************************************
+// *** Dependencies
+// =============================================================
+var express = require('express');
 
-/* define middleware */
-app.use(express.urlencoded({ extended: true })); // init urlencoding parser
-app.use(express.json()); // init JSON parser
+// Sets up the Express App
+// =============================================================
+var app = express();
+var PORT = process.env.PORT || 3001;
 
-/* serve static assets */
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-}
+// Requiring our models for syncing
+var db = require('./models');
 
-// add routes
-app.use(routes);
+// Sets up the Express app to handle data parsing
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// connect mongo "book-worm-db"
-const url = process.env.MONGODB_URI || "mongodb://localhost/book-worm-db";
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
+// Static directory
+app.use(express.static('client'));
 
-// spin up server
-app.listen(PORT, function () {
-  console.log(`🌎  ==> server now listening on PORT ${PORT}!`);
+// Routes
+// =============================================================
+require('./routes/api-routes.js')(app);
+
+// require('./routes/html-routes.js')(app);
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, '../client/public/index.html'));
+});
+
+// Syncing our sequelize models and then starting our Express app
+// =============================================================
+db.sequelize.sync({ force: false }).then(function () {
+    app.listen(PORT, function () {
+        console.log('App listening on PORT ' + PORT);
+    });
 });

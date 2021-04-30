@@ -1,14 +1,40 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-
-const wordSchema = new Schema({
-  name: { type: String, required: true },
-  definition: { type: String, required: true },
-  partOfSpeech: { type: String, required: true },
-  origin: { type: String, required: true },
-  date: { type: Date, default: Date.now },
-});
-
-const Word = mongoose.model("Word", wordSchema);
-
-module.exports = Word;
+module.exports = function (sequelize, DataTypes) {
+    const Word = sequelize.define('Word', {
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                len: [1],
+            },
+        },
+        definition: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                len: [1],
+            },
+        },
+        partOfSpeech: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                len: [1],
+            },
+        },
+        origin: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                len: [1],
+            },
+        },
+        date: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                len: [1],
+            },
+        },
+    });
+    return Word;
+};
