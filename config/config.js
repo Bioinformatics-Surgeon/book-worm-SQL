@@ -7,12 +7,4 @@ module.exports = {
         port: 3306,
         dialect: 'mysql',
     },
-    production: {
-        username: process.env.USERNAME,
-        password: process.env.HOST,
-        database: process.env.DATABASE,
-        host: process.env.HOST,
-        port: 3306,
-        dialect: 'mysql',
-    },
 };
