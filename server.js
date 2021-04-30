@@ -24,11 +24,14 @@ app.use(express.static('client'));
 // Routes
 // =============================================================
 require('./routes/api-routes.js')(app);
-
-// require('./routes/html-routes.js')(app);
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '../client/public/index.html'));
-});
+/* serve static assets */
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/build'));
+} else {
+    app.get('/', function (req, res) {
+        res.sendFile(path.join(__dirname, '../client/public/index.html'));
+    });
+}
 
 // Syncing our sequelize models and then starting our Express app
 // =============================================================
