@@ -24,6 +24,7 @@ app.use(express.static('client'));
 // Routes
 // =============================================================
 require('./routes/api-routes.js')(app);
+
 /* serve static assets */
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));

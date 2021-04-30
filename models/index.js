@@ -9,7 +9,7 @@ var config = require(__dirname + '/../config/config.js')[env];
 var db = {};
 
 if (process.env.NODE_ENV === 'production') {
-    var sequelize = new Sequelize(process.env.JAWSDB_URL);
+    var sequelize = new Sequelize(process.env.JAWSDB_URL, (dialect: 'mysql'));
 } else {
     if (config.use_env_variable) {
         var sequelize = new Sequelize(process.env[config.use_env_variable]);
