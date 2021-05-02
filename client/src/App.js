@@ -1,9 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Nav from './components/Nav';
-
-import Words from './pages/Words';
 import { Detail } from './pages/Detail';
+import Words from './pages/Words';
 
 class App extends React.Component {
     render() {

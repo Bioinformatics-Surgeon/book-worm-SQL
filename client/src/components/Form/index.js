@@ -35,18 +35,6 @@ export function Dropdown(props) {
     );
 }
 
-export function FormBtn(props) {
-    return (
-        <button
-            {...props}
-            style={{ float: 'right', marginBottom: 10 }}
-            className={props.updating ? 'btn btn-info' : 'btn btn-success'}
-        >
-            {props.children}
-        </button>
-    );
-}
-
 export function NewWordForm({
     handleInputChange,
     wordObject,
@@ -75,20 +63,6 @@ export function NewWordForm({
                 placeholder="Part Of Speech (required)"
                 required
             />
-            <FormBtn
-                disabled={
-                    !(
-                        wordObject.name &&
-                        wordObject.definition &&
-                        wordObject.partOfSpeech &&
-                        wordObject.origin
-                    )
-                }
-                onClick={handleFormSubmit}
-                to={'/words/'}
-            >
-                Submit Word
-            </FormBtn>
         </form>
     );
 }
@@ -122,9 +96,6 @@ export function UpdateWordForm({
                 required
                 word={word}
             />
-            <FormBtn onClick={handleFormUpdate} to={'/words/'} updating="true">
-                Update Word
-            </FormBtn>
         </form>
     );
 }

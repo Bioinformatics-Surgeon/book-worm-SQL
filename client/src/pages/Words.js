@@ -1,29 +1,21 @@
 import React from 'react';
-import API from '../utils/API';
-// import { Link } from "react-router-dom";
-import Jumbotron from '../components/Jumbotron';
-import { Col, Row, Container } from '../components/Grid';
-import { List, WordCard } from '../components/List';
 import { NewWordForm, UpdateWordForm } from '../components/Form';
+import Jumbotron from '../components/Jumbotron';
+import { List, WordCard } from '../components/List';
+import AddWordModal from '../components/Modals/AddWordModal';
+import API from '../utils/API';
+import { Row, Col, Space } from 'antd';
+import UpdateWordModal from '../components/Modals/UpdateWordModal';
 
 class Words extends React.Component {
-    // setting initial state
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            words: [],
-            wordObject: {},
-            updating: false,
-            currentWord: {},
-        };
-
-        this.handleDelete = this.handleDelete.bind(this);
-        this.handleUpdate = this.handleUpdate.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
-        this.handleFormUpdate = this.handleFormUpdate.bind(this);
-    }
+    state = {
+        words: [],
+        wordObject: {},
+        updating: false,
+        currentWord: {},
+        showAddWordModal: false,
+        showUpdateWordModal: false,
+    };
 
     componentDidMount() {
         API.getWords().then((res) => {
@@ -33,97 +25,39 @@ class Words extends React.Component {
         });
     }
 
-    render() {
-        const { words, currentWord, updating } = this.state;
-
-        return (
-            <Container fluid>
-                <Row>
-                    <Col size="md-6 sm-12">
-                        <Jumbotron>My Words</Jumbotron>
-                        <Row>
-                            {words.length ? (
-                                <List>
-                                    {words.map((word) => (
-                                        <WordCard
-                                            key={word._id}
-                                            word={word}
-                                            handleDelete={this.handleDelete.bind(
-                                                null,
-                                                word._id,
-                                            )}
-                                            handleUpdate={this.handleUpdate.bind(
-                                                null,
-                                                word._id,
-                                            )}
-                                        />
-                                    ))}
-                                </List>
-                            ) : (
-                                <div className="mx-auto">
-                                    <h3>You have not added any words</h3>
-                                </div>
-                            )}
-                        </Row>
-                    </Col>
-                    <Col size="md-6 sm-12">
-                        <Jumbotron>
-                            {updating ? currentWord.name : 'Add New Word'}
-                        </Jumbotron>
-                        <Row>
-                            <Col size="md-12 sm-12">
-                                {this.renderWordForm()}
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
-            </Container>
-        );
-    }
-
-    // render functions
-    renderWordForm() {
-        if (this.state.updating) {
-            return (
-                <UpdateWordForm
-                    handleInputChange={this.handleInputChange}
-                    handleFormUpdate={this.handleFormUpdate}
-                    wordObject={this.state.wordObject}
-                    word={this.state.currentWord}
-                />
-            );
-        } else {
-            return (
-                <NewWordForm
-                    handleInputChange={this.handleInputChange}
-                    handleFormSubmit={this.handleFormSubmit}
-                    wordObject={this.state.wordObject}
-                />
-            );
-        }
-    }
-
     // helper functions
-    handleDelete(id) {
-        console.log('DISABLED');
-        // API.deleteWord(id).then(
-        //     API.getWords().then((res) => {
-        //         this.loadWords();
-        //     }),
-        // );
-    }
+    handleDelete = (id) => {
+        console.log('DELETE: ', id);
+        API.deleteWord(id)
+            .then(() => {
+                this.loadWords();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
-    handleUpdate(id) {
+    handleUpdate = (id) => {
+        const { showUpdateWordModal } = this.state;
+
+        console.log('ID: ', id);
+
         API.getWord(id).then((res) => {
+            console.log('RES: ', res);
             this.setState((state) => {
-                return { ...state, updating: true, currentWord: res.data };
+                return {
+                    ...state,
+                    updating: true,
+                    currentWord: res.data,
+                    showUpdateWordModal: !showUpdateWordModal,
+                };
             });
 
             this.populateInputFields();
         });
-    }
+    };
 
-    populateInputFields() {
+    populateInputFields = () => {
         setTimeout(() => {
             const {
                 partOfSpeech,
@@ -151,9 +85,9 @@ class Words extends React.Component {
             updateDefinitionInput.value = definition;
             updateOriginInput.value = origin;
         }, 100);
-    }
+    };
 
-    handleInputChange(event) {
+    handleInputChange = (event) => {
         const { name, value } = event.target;
 
         this.setState((prevState) => {
@@ -162,13 +96,11 @@ class Words extends React.Component {
             word[name] = value; // update the name property, assign a new value
             return { wordObject: word }; // return new object word object
         });
-    }
+    };
 
-    // When the form is submitted, use the API.saveWord method to save the word data
-    // Then reload words from the database
-    handleFormSubmit(event) {
-        event.preventDefault();
+    handleAddWord = () => {
         const { wordObject } = this.state;
+        const date = new Date();
 
         if (
             wordObject.name &&
@@ -181,6 +113,7 @@ class Words extends React.Component {
                 definition: wordObject.definition,
                 partOfSpeech: wordObject.partOfSpeech,
                 origin: wordObject.origin,
+                date,
             })
                 .then((res) =>
                     API.getWords().then((res) =>
@@ -192,12 +125,10 @@ class Words extends React.Component {
                 )
                 .catch((err) => console.log(err));
         }
-    }
+    };
 
-    handleFormUpdate(event) {
-        event.preventDefault();
-
-        const { wordObject, currentWord } = this.state;
+    handleUpdateWord = () => {
+        const { wordObject, currentWord, showUpdateWordModal } = this.state;
 
         let updatedWord = { ...currentWord, ...wordObject };
 
@@ -207,7 +138,8 @@ class Words extends React.Component {
             updatedWord.partOfSpeech &&
             updatedWord.origin
         ) {
-            API.updateWord('/' + currentWord._id, {
+            API.updateWord({
+                id: currentWord.id,
                 name: updatedWord.name,
                 definition: updatedWord.definition,
                 partOfSpeech: updatedWord.partOfSpeech,
@@ -216,24 +148,27 @@ class Words extends React.Component {
                 .then((res) =>
                     API.getWords().then((res) =>
                         this.setState(
-                            { words: res.data, wordObject: {} },
-                            this.clearForm(),
+                            {
+                                words: res.data,
+                                wordObject: {},
+                            },
+                            this.hanldeCloseUpdateModal,
                         ),
                     ),
                 )
                 .catch((err) => console.log(err));
         }
-    }
+    };
 
-    loadWords() {
+    loadWords = () => {
         API.getWords().then((res) => {
             this.setState({
                 words: res.data,
             });
         });
-    }
+    };
 
-    clearForm() {
+    clearForm = () => {
         if (this.state.updating) {
             this.setState((state) => {
                 return { updating: false, currentWord: {} };
@@ -241,6 +176,103 @@ class Words extends React.Component {
         }
         document.getElementById('create-word-form').reset();
         this.setState({ wordObject: {} });
+    };
+
+    showAddWordModal = () => {
+        const { showAddWordModal } = this.state;
+        console.log('STATE: ', this.state);
+        this.setState(() => {
+            return { showAddWordModal: !showAddWordModal };
+        }, this.handleAddWord());
+    };
+
+    hanldeCloseUpdateModal = () => {
+        const { showUpdateWordModal } = this.state;
+
+        this.setState(() => {
+            return { showUpdateWordModal: !showUpdateWordModal };
+        });
+    };
+
+    renderWordForm = () => {
+        if (this.state.updating) {
+            return (
+                <UpdateWordForm
+                    handleInputChange={this.handleInputChange}
+                    handleUpdate={this.handleFormUpdate}
+                    wordObject={this.state.wordObject}
+                    word={this.state.currentWord}
+                />
+            );
+        } else {
+            return (
+                <NewWordForm
+                    handleInputChange={this.handleInputChange}
+                    handleFormSubmit={this.handleFormSubmit}
+                    wordObject={this.state.wordObject}
+                />
+            );
+        }
+    };
+
+    render() {
+        const {
+            words,
+            currentWord,
+            updating,
+            showAddWordModal,
+            showUpdateWordModal,
+        } = this.state;
+
+        console.log('STATE: ', this.state);
+        return (
+            <>
+                <Row justify="center">
+                    <Col span={22}>
+                        <Jumbotron
+                            headerText="My Words"
+                            handleAddWord={this.showAddWordModal}
+                        />
+
+                        <Row>
+                            {words.length ? (
+                                <List>
+                                    {words.map((word) => (
+                                        <WordCard
+                                            key={word.id}
+                                            word={word}
+                                            handleDelete={this.handleDelete}
+                                            handleUpdate={this.handleUpdate}
+                                        />
+                                    ))}
+                                </List>
+                            ) : (
+                                <div className="mx-auto">
+                                    <h3>You have not added any words</h3>
+                                </div>
+                            )}
+                        </Row>
+                    </Col>
+                </Row>
+                {updating ? (
+                    <UpdateWordModal
+                        handleCancel={this.hanldeCloseUpdateModal}
+                        handleUpdate={this.handleUpdateWord}
+                        visible={showUpdateWordModal}
+                        children={this.renderWordForm()}
+                        updating={updating}
+                        word={currentWord}
+                    />
+                ) : (
+                    <AddWordModal
+                        showModal={this.showAddWordModal}
+                        visible={showAddWordModal}
+                        children={this.renderWordForm()}
+                        updating={updating}
+                    />
+                )}
+            </>
+        );
     }
 }
 

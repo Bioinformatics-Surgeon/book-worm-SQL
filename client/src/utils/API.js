@@ -6,10 +6,6 @@ export default {
         return axios.get('/api/words');
     },
 
-    getOrigins: function () {
-        return axios.get('/api/words/origins');
-    },
-
     // GETS word by id
     getWord: function (id) {
         return axios.get('/api/words/' + id);
@@ -21,8 +17,9 @@ export default {
     },
 
     // UPDATES word by id
-    updateWord: function (id, wordData) {
-        return axios.put('/api/words' + id, wordData);
+    updateWord: function (wordData) {
+        console.log('WORD DATA: ', wordData);
+        return axios.put('/api/words', wordData);
     },
 
     // DELETES word by id
