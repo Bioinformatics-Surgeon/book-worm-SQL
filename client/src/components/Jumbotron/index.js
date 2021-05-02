@@ -7,7 +7,7 @@ function Jumbotron({ headerText, handleAddWord }) {
     return (
         <Row
             style={{
-                height: 100,
+                height: 150,
                 paddingTop: 40,
                 textAlign: 'center',
                 borderRadius: '10px',
