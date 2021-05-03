@@ -10,7 +10,7 @@ function Nav() {
                 <li className="nav-item">
                     <a
                         className="nav-link text-primary"
-                        href="https://github.com/Bioinformatics-Surgeon/book-worm/blob/master/README.md"
+                        href="https://github.com/Bioinformatics-Surgeon/book-worm-SQL/blob/master/README.md"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
