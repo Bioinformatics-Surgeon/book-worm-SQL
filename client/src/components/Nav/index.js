@@ -6,6 +6,18 @@ function Nav() {
             <a className="navbar-brand justify-content-center" href="/">
                 Book Worm
             </a>
+            <ul className="nav justify-content-end nav-pills">
+                <li className="nav-item">
+                    <a
+                        className="nav-link text-primary"
+                        href="https://github.com/Bioinformatics-Surgeon/book-worm/blob/master/README.md"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        About
+                    </a>
+                </li>
+            </ul>
         </nav>
     );
 }
